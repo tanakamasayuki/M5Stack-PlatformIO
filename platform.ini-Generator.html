@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>M5Stack platform.ini Generator</title>
+  <script>
+    window.onload = function () {
+      document.getElementById("platform").onchange = changeParam;
+      document.getElementById("frameworks").onchange = changeParam;
+      document.getElementById("board").onchange = changeParam;
+      document.getElementById("library").onchange = changeParam;
+      changeParam();
+    }
+
+    function changeParam() {
+      let platform = document.getElementById("platform");
+      let frameworks = document.getElementById("frameworks");
+      let board = document.getElementById("board");
+      let library = document.getElementById("library");
+      let ini = document.getElementById("ini");
+
+      ini.value = "[env:" + board.value + "]\n";
+
+      if (platform.value == 'latest') {
+        ini.value += "platform = espressif32\n";
+      } else {
+        ini.value += "platform = espressif32@" + platform.value + "\n";
+      }
+
+      ini.value += "framework = " + frameworks.value + "\n";
+
+      let board_name = board.value;
+      let lib_str = "";
+      switch (board.value) {
+        case 'm5stack-basic':
+          board_name = "m5stack-core-esp32";
+          lib_str = "m5stack/M5Stack";
+          break;
+        case 'm5stack-grey':
+          lib_str = "m5stack/M5Stack";
+          break;
+        case 'm5stack-go':
+          board_name = "m5stack-core-esp32";
+          lib_str = "m5stack/M5Stack";
+          break;
+        case 'm5stack-fire':
+          lib_str = "m5stack/M5Stack";
+          break;
+        case 'm5stack-core2':
+          lib_str = "m5stack/M5Core2";
+          break;
+        case 'm5stack-core2-aws':
+          board_name = "m5stack-core2";
+          lib_str = "m5stack/M5Core2";
+          break;
+        case 'm5stack-tough':
+          board_name = "m5stack-core2";
+          lib_str = "m5stack/M5Core2";
+          break;
+        case 'm5stick-c':
+          lib_str = "m5stack/M5StickC";
+          break;
+        case 'm5stick-c-plus':
+          board_name = "m5stick-c";
+          lib_str = "m5stack/M5StickCPlus";
+          break;
+        case 'm5stick-t':
+          board_name = "m5stick-c";
+          lib_str = "https://github.com/m5stack/M5-StickT";
+          break;
+        case 'm5stick-t2':
+          board_name = "m5stick-c";
+          lib_str = "https://github.com/m5stack/M5-StickT";
+          break;
+        case 'm5stack-atom-lite':
+          board_name = "m5stack-atom";
+          lib_str = "m5stack/M5Atom";
+          lib_str += "\n  fastled/FastLED";
+          break;
+        case 'm5stack-atom-matrix':
+          board_name = "m5stack-atom";
+          lib_str = "m5stack/M5Atom";
+          lib_str += "\n  fastled/FastLED";
+          break;
+        case 'm5stack-atom-echo':
+          board_name = "m5stack-atom";
+          lib_str = "m5stack/M5Atom";
+          lib_str += "\n  fastled/FastLED";
+          break;
+        case 'm5stack-stamp-pico':
+          board_name = "m5stick-c";
+          lib_str = "fastled/FastLED";
+          break;
+        case 'm5stack-coreink':
+          board_name = "m5stick-c";
+          lib_str = "m5stack/M5-CoreInk";
+          break;
+        case 'm5paper':
+          board_name = "m5stick-c";
+          lib_str = "m5stack/M5EPD";
+          break;
+        case 'm5stack-timer-cam':
+          lib_str = "m5stack/Timer-CAM";
+          break;
+      }
+
+      ini.value += "board = " + board_name + "\n";
+
+      ini.value += "lib_ldf_mode = deep\n";
+      ini.value += "monitor_speed = 115200\n";
+      ini.value += "build_flags = -DCORE_DEBUG_LEVEL=0 ;0:None, 1:Error, 2:Warn, 3:Info, 4:Debug, 5:Verbose\n";
+      ini.value += ";upload_port = COM3\n";
+
+      if(frameworks.value=="arduino"){
+        ini.value += ";board_build.partitions = no_ota.csv ;https://github.com/espressif/arduino-esp32/tree/master/tools/partitions\n";
+      } else {
+        ini.value += ";board_build.partitions = partitions_singleapp_large.csv ;https://github.com/espressif/esp-idf/tree/master/components/partition_table\n";
+      }
+
+      if (library.value == "m5gfx") {
+        lib_str = "m5stack/M5GFX";
+      } else if (library.value == "m5unified") {
+        lib_str = "https://github.com/m5stack/M5Unified";
+      }
+      ini.value += "lib_deps = \n  " + lib_str + "\n";
+    }
+  </script>
+</head>
+
+<body>
+  <h2>Platform</h2>
+  <select name="platform" id="platform">
+    <option value="latest">espressif32(latest)</option>
+    <option value="3.3.2 #ESP-IDF(3.3.5), Arduino(1.0.6)">espressif32@3.3.2 ESP-IDF(3.3.5), Arduino(1.0.6)</option>
+    <option value="3.1.1 #ESP-IDF(3.3), Arduino(1.0.5)">espressif32@3.1.1 ESP-IDF(3.3), Arduino(1.0.5)</option>
+    <option value="3.0.0 #ESP-IDF(3.2), Arduino(1.0.4)">espressif32@3.0.0 ESP-IDF(3.2), Arduino(1.0.4)</option>
+  </select>
+  <div>
+    PlatformIO does not support ESP-IDF 4.x (Arduino 2.x.x).<br />
+    The recommendation is Latest.
+  </div>
+
+  <h2>Frameworks</h2>
+  <select name="frameworks" id="frameworks">
+    <option value="arduino">Arduino</option>
+    <option value="espidf">ESP-IDF</option>
+  </select>
+  <div>
+    The recommendation is Arduino.
+  </div>
+
+  <h2>Board</h2>
+  <select name="board" id="board">
+    <option value="m5stack-basic">M5Stack BASIC</option>
+    <option value="m5stack-grey">M5Stack GREY</option>
+    <option value="m5stack-go">M5Stack GO</option>
+    <option value="m5stack-fire">M5Stack FIRE</option>
+    <option value="m5stack-core2">M5Stack Core2</option>
+    <option value="m5stack-core2-aws">M5Stack Core2 for AWS</option>
+    <option value="m5stack-tough">M5Stack Tough</option>
+    <option value="m5stick-c">M5StickC</option>
+    <option value="m5stick-c-plus">M5StickC Plus</option>
+    <option value="m5stick-t">M5StickT</option>
+    <option value="m5stick-t2">M5StickT2</option>
+    <option value="m5stack-atom-lite">ATOM LITE</option>
+    <option value="m5stack-atom-matrix">ATOM MATRIX</option>
+    <option value="m5stack-atom-echo">ATOM ECHO</option>
+    <option value="m5stack-stamp-pico">M5Stamp Pico</option>
+    <option value="m5stack-coreink">CoreInk</option>
+    <option value="m5paper">M5Paper</option>
+    <option value="m5stack-timer-cam">Timer CAM</option>
+  </select>
+
+  <h2>Library</h2>
+  <select name="library" id="library">
+    <option value="official">Official(Library by board)</option>
+    <option value="m5gfx">M5GFX(Graphics library only)</option>
+    <option value="m5unified">M5Unified(M5Stack Series unified library)</option>
+  </select>
+  <div>
+    M5 Unified is a unified library under development. Use this when you want to develop in the same way on multiple
+    boards.<br />
+    M5GFX is a powerful graphics library. I also use M5 Unified.<br />
+  </div>
+
+  <h2>platform.ini</h2>
+  <textarea name="ini" id="ini" cols="90" rows="20"></textarea>
+</body>
+
+</html>
