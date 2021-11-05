@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./assets/css/style.css">
   <title>M5Stack platform.ini Generator</title>
   <script>
     window.onload = function () {
@@ -112,7 +114,7 @@
       ini.value += "build_flags = -DCORE_DEBUG_LEVEL=0 ;0:None, 1:Error, 2:Warn, 3:Info, 4:Debug, 5:Verbose\n";
       ini.value += ";upload_port = COM3\n";
 
-      if(frameworks.value=="arduino"){
+      if (frameworks.value == "arduino") {
         ini.value += ";board_build.partitions = no_ota.csv ;https://github.com/espressif/arduino-esp32/tree/master/tools/partitions\n";
       } else {
         ini.value += ";board_build.partitions = partitions_singleapp_large.csv ;https://github.com/espressif/esp-idf/tree/master/components/partition_table\n";
@@ -129,63 +131,67 @@
 </head>
 
 <body>
-  <h2>Platform</h2>
-  <select name="platform" id="platform">
-    <option value="latest">espressif32(latest)</option>
-    <option value="3.3.2 #ESP-IDF(3.3.5), Arduino(1.0.6)">espressif32@3.3.2 ESP-IDF(3.3.5), Arduino(1.0.6)</option>
-    <option value="3.1.1 #ESP-IDF(3.3), Arduino(1.0.5)">espressif32@3.1.1 ESP-IDF(3.3), Arduino(1.0.5)</option>
-    <option value="3.0.0 #ESP-IDF(3.2), Arduino(1.0.4)">espressif32@3.0.0 ESP-IDF(3.2), Arduino(1.0.4)</option>
-  </select>
-  <div>
-    PlatformIO does not support ESP-IDF 4.x (Arduino 2.x.x).<br />
-    The recommendation is Latest.
+  <div class="container-lg px-3 my-5 markdown-body">
+
+    <h2>Platform</h2>
+    <select name="platform" id="platform">
+      <option value="latest">espressif32(latest)</option>
+      <option value="3.3.2 #ESP-IDF(3.3.5), Arduino(1.0.6)">espressif32@3.3.2 ESP-IDF(3.3.5), Arduino(1.0.6)</option>
+      <option value="3.1.1 #ESP-IDF(3.3), Arduino(1.0.5)">espressif32@3.1.1 ESP-IDF(3.3), Arduino(1.0.5)</option>
+      <option value="3.0.0 #ESP-IDF(3.2), Arduino(1.0.4)">espressif32@3.0.0 ESP-IDF(3.2), Arduino(1.0.4)</option>
+    </select>
+    <div>
+      PlatformIO does not support ESP-IDF 4.x (Arduino 2.x.x).<br />
+      The recommendation is Latest.
+    </div>
+
+    <h2>Frameworks</h2>
+    <select name="frameworks" id="frameworks">
+      <option value="arduino">Arduino</option>
+      <option value="espidf">ESP-IDF</option>
+    </select>
+    <div>
+      The recommendation is Arduino.
+    </div>
+
+    <h2>Board</h2>
+    <select name="board" id="board">
+      <option value="m5stack-basic">M5Stack BASIC</option>
+      <option value="m5stack-grey">M5Stack GREY</option>
+      <option value="m5stack-go">M5Stack GO</option>
+      <option value="m5stack-fire">M5Stack FIRE</option>
+      <option value="m5stack-core2">M5Stack Core2</option>
+      <option value="m5stack-core2-aws">M5Stack Core2 for AWS</option>
+      <option value="m5stack-tough">M5Stack Tough</option>
+      <option value="m5stick-c">M5StickC</option>
+      <option value="m5stick-c-plus">M5StickC Plus</option>
+      <option value="m5stick-t">M5StickT</option>
+      <option value="m5stick-t2">M5StickT2</option>
+      <option value="m5stack-atom-lite">ATOM LITE</option>
+      <option value="m5stack-atom-matrix">ATOM MATRIX</option>
+      <option value="m5stack-atom-echo">ATOM ECHO</option>
+      <option value="m5stack-stamp-pico">M5Stamp Pico</option>
+      <option value="m5stack-coreink">CoreInk</option>
+      <option value="m5paper">M5Paper</option>
+      <option value="m5stack-timer-cam">Timer CAM</option>
+    </select>
+
+    <h2>Library</h2>
+    <select name="library" id="library">
+      <option value="official">Official(Library by board)</option>
+      <option value="m5gfx">M5GFX(Graphics library only)</option>
+      <option value="m5unified">M5Unified(M5Stack Series unified library)</option>
+    </select>
+    <div>
+      M5 Unified is a unified library under development. Use this when you want to develop in the same way on multiple
+      boards.<br />
+      M5GFX is a powerful graphics library. I also use M5 Unified.<br />
+    </div>
+
+    <h2>platform.ini</h2>
+    <textarea name="ini" id="ini" cols="90" rows="20"></textarea>
+
   </div>
-
-  <h2>Frameworks</h2>
-  <select name="frameworks" id="frameworks">
-    <option value="arduino">Arduino</option>
-    <option value="espidf">ESP-IDF</option>
-  </select>
-  <div>
-    The recommendation is Arduino.
-  </div>
-
-  <h2>Board</h2>
-  <select name="board" id="board">
-    <option value="m5stack-basic">M5Stack BASIC</option>
-    <option value="m5stack-grey">M5Stack GREY</option>
-    <option value="m5stack-go">M5Stack GO</option>
-    <option value="m5stack-fire">M5Stack FIRE</option>
-    <option value="m5stack-core2">M5Stack Core2</option>
-    <option value="m5stack-core2-aws">M5Stack Core2 for AWS</option>
-    <option value="m5stack-tough">M5Stack Tough</option>
-    <option value="m5stick-c">M5StickC</option>
-    <option value="m5stick-c-plus">M5StickC Plus</option>
-    <option value="m5stick-t">M5StickT</option>
-    <option value="m5stick-t2">M5StickT2</option>
-    <option value="m5stack-atom-lite">ATOM LITE</option>
-    <option value="m5stack-atom-matrix">ATOM MATRIX</option>
-    <option value="m5stack-atom-echo">ATOM ECHO</option>
-    <option value="m5stack-stamp-pico">M5Stamp Pico</option>
-    <option value="m5stack-coreink">CoreInk</option>
-    <option value="m5paper">M5Paper</option>
-    <option value="m5stack-timer-cam">Timer CAM</option>
-  </select>
-
-  <h2>Library</h2>
-  <select name="library" id="library">
-    <option value="official">Official(Library by board)</option>
-    <option value="m5gfx">M5GFX(Graphics library only)</option>
-    <option value="m5unified">M5Unified(M5Stack Series unified library)</option>
-  </select>
-  <div>
-    M5 Unified is a unified library under development. Use this when you want to develop in the same way on multiple
-    boards.<br />
-    M5GFX is a powerful graphics library. I also use M5 Unified.<br />
-  </div>
-
-  <h2>platform.ini</h2>
-  <textarea name="ini" id="ini" cols="90" rows="20"></textarea>
 </body>
 
 </html>
