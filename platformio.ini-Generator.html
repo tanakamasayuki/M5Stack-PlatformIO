@@ -21,8 +21,13 @@
       let board = document.getElementById("board");
       let library = document.getElementById("library");
       let ini = document.getElementById("ini");
+      let psram = false;
+      let upload_speed = 1500000;
+      let cpu_speed = "240000000L";
+      let flach_speed = "80000000L";
+      
 
-      ini.value = "[env:" + board.value + "]\n";
+      ini.value = "[env:" + board.value + "] ;https://docs.platformio.org/en/latest/platforms/espressif32.html\n";
 
       if (platform.value == 'latest') {
         ini.value += "platform = espressif32\n";
@@ -48,9 +53,11 @@
           break;
         case 'm5stack-fire':
           lib_str = "m5stack/M5Stack";
+          psram = true;
           break;
         case 'm5stack-core2':
           lib_str = "m5stack/M5Core2";
+          psram = true;
           break;
         case 'm5stack-core2-aws':
           board_name = "m5stack-core2";
@@ -59,6 +66,7 @@
         case 'm5stack-tough':
           board_name = "m5stack-core2";
           lib_str = "m5stack/M5Core2";
+          psram = true;
           break;
         case 'm5stick-c':
           lib_str = "m5stack/M5StickC";
@@ -94,25 +102,63 @@
           board_name = "m5stick-c";
           lib_str = "fastled/FastLED";
           break;
+        case 'm5stack_stamp_c3':
+          board_name = "esp32-c3-devkitm-1";
+          lib_str = "fastled/FastLED";
+          upload_speed = "921600 ";
+          cpu_speed = "160000000L";
+          break;
+        case 'm5stack_stamp_c3u':
+          board_name = "esp32-c3-devkitm-1";
+          lib_str = "fastled/FastLED";
+          upload_speed = "921600 ";
+          cpu_speed = "160000000L";
+          break;
         case 'm5stack-coreink':
           board_name = "m5stick-c";
           lib_str = "m5stack/M5-CoreInk";
+          upload_speed = "921600 ";
           break;
         case 'm5paper':
           board_name = "m5stick-c";
           lib_str = "m5stack/M5EPD";
+          psram = true;
+          upload_speed = "921600 ";
           break;
         case 'm5stack-timer-cam':
           lib_str = "m5stack/Timer-CAM";
+          psram = true;
+          break;
+        case 'm5stack_unit_cam':
+          board_name = "m5stick-c";
+          break;
+        case 'm5stack_poe_cam':
+          board_name = "m5stick-c";
+          lib_str = "m5stack/PoE_CAM";
           break;
       }
 
       ini.value += "board = " + board_name + "\n";
 
       ini.value += "lib_ldf_mode = deep\n";
+      ini.value += "board_build.f_cpu = " + cpu_speed + "       ;240M(WiFi OK), 160M(WiFi OK), 80M(WiFi OK), 40M, 20M, 10M\n";
+      ini.value += "board_build.f_flash = " + flach_speed + "      ;80M, 40M\n";
+      ini.value += "board_build.flash_mode = dio         ;qio, qout, dio, dout\n"
       ini.value += "monitor_speed = 115200\n";
-      ini.value += "build_flags = -DCORE_DEBUG_LEVEL=0 ;0:None, 1:Error, 2:Warn, 3:Info, 4:Debug, 5:Verbose\n";
+      ini.value += "build_flags =\n";
+      ini.value += "    -DCORE_DEBUG_LEVEL=0             ;0:None, 1:Error, 2:Warn, 3:Info, 4:Debug, 5:Verbose\n";
+      if(cpu_speed=="240000000L"){
+        ini.value += "    -DARDUINO_RUNNING_CORE=1         ;0:Core0, 1:Core1(default)\n";
+        ini.value += "    -DARDUINO_EVENT_RUNNING_CORE=1   ;0:Core0, 1:Core1(default)\n";
+      }
+      if (psram) {
+        ini.value += "    -DBOARD_HAS_PSRAM\n";
+        ini.value += "    -mfix-esp32-psram-cache-issue\n";
+        ini.value += "    -mfix-esp32-psram-cache-strategy=memw\n";
+      }
       ini.value += ";upload_port = COM3\n";
+      ini.value += "upload_speed = " + upload_speed + "               ;1500000, 921600, 750000, 460800, 115200\n";
+
 
       if (frameworks.value == "arduino") {
         ini.value += ";board_build.partitions = no_ota.csv ;https://github.com/espressif/arduino-esp32/tree/master/tools/partitions\n";
@@ -177,9 +223,14 @@
       <option value="m5stack-atom-matrix">ATOM MATRIX</option>
       <option value="m5stack-atom-echo">ATOM ECHO</option>
       <option value="m5stack-stamp-pico">M5Stamp Pico</option>
+      <option value="m5stack_stamp_c3">M5Stamp C3</option>
+      <option value="m5stack_stamp_c3u">M5Stamp C3U</option>
       <option value="m5stack-coreink">CoreInk</option>
       <option value="m5paper">M5Paper</option>
       <option value="m5stack-timer-cam">Timer CAM</option>
+      <option value="m5stack_unit_cam">Unit CAM</option>
+      <option value="m5stack_poe_cam">PoE-CAM</option>
+      
     </select>
 
     <h2>Library</h2>
