@@ -21,11 +21,14 @@
       let board = document.getElementById("board");
       let library = document.getElementById("library");
       let ini = document.getElementById("ini");
+      let main = document.getElementById("main");
       let psram = false;
       let upload_speed = 1500000;
       let cpu_speed = "240000000L";
       let flach_speed = "80000000L";
-      
+      let main_include = "";
+      let main_begin = "";
+      let main_update = "";
 
       ini.value = "[env:" + board.value + "] ;https://docs.platformio.org/en/latest/platforms/espressif32.html\n";
 
@@ -43,98 +46,184 @@
         case 'm5stack-basic':
           board_name = "m5stack-core-esp32";
           lib_str = "m5stack/M5Stack";
+          main_include = "#include <M5Stack.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_begin += "  M5.Power.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-grey':
+          board_name = "m5stack-core-esp32";
           lib_str = "m5stack/M5Stack";
+          main_include = "#include <M5Stack.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_begin += "  M5.Power.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-go':
           board_name = "m5stack-core-esp32";
           lib_str = "m5stack/M5Stack";
+          main_include = "#include <M5Stack.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_begin += "  M5.Power.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-fire':
           lib_str = "m5stack/M5Stack";
+          main_include = "#include <M5Stack.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_begin += "  M5.Power.begin();\n";
+          main_update = "  M5.update();\n";
           psram = true;
           break;
         case 'm5stack-core2':
           lib_str = "m5stack/M5Core2";
           psram = true;
+          main_include = "#include <M5Core2.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-core2-aws':
           board_name = "m5stack-core2";
           lib_str = "m5stack/M5Core2";
+          psram = true;
+          main_include = "#include <M5Core2.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-tough':
-          board_name = "m5stack-core2";
+          board_name = "m5stack-tough";
           lib_str = "m5stack/M5Core2";
           psram = true;
+          main_include = "#include <M5Core2.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
+          break;
+        case 'm5stack-station-485':
+        case 'm5stack-station-BAT':
+          board_name = "m5stack-station";
+          lib_str = "m5stack/M5Station";
+          main_include = "#include <M5Station.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stick-c':
           lib_str = "m5stack/M5StickC";
+          main_include = "#include <M5StickC.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stick-c-plus':
           board_name = "m5stick-c";
           lib_str = "m5stack/M5StickCPlus";
+          main_include = "#include <M5StickCPlus.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stick-t':
           board_name = "m5stick-c";
           lib_str = "https://github.com/m5stack/M5-StickT";
+          main_include = "#include <M5StickT.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stick-t2':
           board_name = "m5stick-c";
           lib_str = "https://github.com/m5stack/M5-StickT";
+          main_include = "#include <M5StickT.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-atom-lite':
           board_name = "m5stack-atom";
           lib_str = "m5stack/M5Atom";
           lib_str += "\n  fastled/FastLED";
+          main_include = "#include <M5Atom.h>\n";
+          main_begin  = "  M5.begin(\n";
+          main_begin += "    true,  // SerialEnable\n";
+          main_begin += "    flase, // I2CEnable\n";
+          main_begin += "    true   // DisplayEnable\n";
+          main_begin += "  );\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-atom-matrix':
           board_name = "m5stack-atom";
           lib_str = "m5stack/M5Atom";
           lib_str += "\n  fastled/FastLED";
+          main_include = "#include <M5Atom.h>\n";
+          main_begin  = "  M5.begin(\n";
+          main_begin += "    true, // SerialEnable\n";
+          main_begin += "    true, // I2CEnable\n";
+          main_begin += "    true  // DisplayEnable\n";
+          main_begin += "  );\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-atom-echo':
           board_name = "m5stack-atom";
           lib_str = "m5stack/M5Atom";
           lib_str += "\n  fastled/FastLED";
+          main_include = "#include <M5Atom.h>\n";
+          main_begin  = "  M5.begin(\n";
+          main_begin += "    true, // SerialEnable\n";
+          main_begin += "    true, // I2CEnable\n";
+          main_begin += "    true  // DisplayEnable\n";
+          main_begin += "  );\n";
+          main_update = "  M5.update();\n";
+          break;
+        case 'm5stack-atom-u':
+          board_name = "m5stack-atom";
+          lib_str = "m5stack/M5Atom";
+          lib_str += "\n  fastled/FastLED";
+          main_include = "#include <M5Atom.h>\n";
+          main_begin  = "  M5.begin(\n";
+          main_begin += "    true,  // SerialEnable\n";
+          main_begin += "    flase, // I2CEnable\n";
+          main_begin += "    true   // DisplayEnable\n";
+          main_begin += "  );\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-stamp-pico':
-          board_name = "m5stick-c";
+          board_name = "stamp-pico";
           lib_str = "fastled/FastLED";
           break;
         case 'm5stack_stamp_c3':
-          board_name = "esp32-c3-devkitm-1";
+          board_name = "stamp-c3";
           lib_str = "fastled/FastLED";
           upload_speed = "921600 ";
           cpu_speed = "160000000L";
           break;
         case 'm5stack_stamp_c3u':
-          board_name = "esp32-c3-devkitm-1";
+          board_name = "stamp-c3";
           lib_str = "fastled/FastLED";
           upload_speed = "921600 ";
           cpu_speed = "160000000L";
           break;
         case 'm5stack-coreink':
-          board_name = "m5stick-c";
           lib_str = "m5stack/M5-CoreInk";
           upload_speed = "921600 ";
+          main_include = "#include <M5CoreInk.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5paper':
-          board_name = "m5stick-c";
+          board_name = "m5stack-paper";
           lib_str = "m5stack/M5EPD";
           psram = true;
           upload_speed = "921600 ";
+          main_include = "#include <M5EPD.h>\n";
+          main_begin = "  M5.begin();\n";
+          main_update = "  M5.update();\n";
           break;
         case 'm5stack-timer-cam':
           lib_str = "m5stack/Timer-CAM";
           psram = true;
           break;
         case 'm5stack_unit_cam':
-          board_name = "m5stick-c";
+          board_name = "m5stack-unit-cam";
           break;
         case 'm5stack_poe_cam':
-          board_name = "m5stick-c";
+          board_name = "m5stack-poe-cam";
           lib_str = "m5stack/PoE_CAM";
+          main_include = "#include <PoE_CAM.h>\n"
           break;
       }
 
@@ -170,8 +259,21 @@
         lib_str = "m5stack/M5GFX";
       } else if (library.value == "m5unified") {
         lib_str = "m5stack/M5Unified";
+        main_include = "#include <M5Unified.h>\n";
+        main_begin = "  M5.begin();\n";
+        main_update = "  M5.update();\n";
       }
       ini.value += "lib_deps = \n  " + lib_str + "\n";
+
+      main.value = "#include <Arduino.h>\n";
+      main.value += main_include + "\n";
+      main.value += "void setup() {\n";
+      main.value += "  // put your setup code here, to run once:\n" + main_begin;
+      main.value += "}\n";
+      main.value += "\n";
+      main.value += "void loop() {\n";
+      main.value += "  // put your main code here, to run repeatedly:\n" + main_update;
+      main.value += "}\n";
     }
   </script>
 </head>
@@ -218,6 +320,9 @@
       <option value="m5stack-core2">M5Stack Core2</option>
       <option value="m5stack-core2-aws">M5Stack Core2 for AWS</option>
       <option value="m5stack-tough">M5Stack Tough</option>
+      <option value="m5stack-station-485">M5Station-485</option>
+      <option value="m5stack-station-BAT">M5Station-BAT</option>
+      <option value="m5stack-tough">M5Stack Tough</option>
       <option value="m5stick-c">M5StickC</option>
       <option value="m5stick-c-plus">M5StickC Plus</option>
       <option value="m5stick-t">M5StickT</option>
@@ -225,6 +330,7 @@
       <option value="m5stack-atom-lite">ATOM LITE</option>
       <option value="m5stack-atom-matrix">ATOM MATRIX</option>
       <option value="m5stack-atom-echo">ATOM ECHO</option>
+      <option value="m5stack-atom-u">ATOM U</option>
       <option value="m5stack-stamp-pico">M5Stamp Pico</option>
       <option value="m5stack_stamp_c3">M5Stamp C3</option>
       <option value="m5stack_stamp_c3u">M5Stamp C3U</option>
@@ -250,6 +356,9 @@
 
     <h2>platformio.ini</h2>
     <textarea name="ini" id="ini" cols="90" rows="15"></textarea>
+
+    <h2>main.cpp</h2>
+    <textarea name="main" id="main" cols="90" rows="15"></textarea>
 
   </div>
 </body>
